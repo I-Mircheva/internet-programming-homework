@@ -4,16 +4,15 @@ import java.io.*;
 import java.net.Socket;
 
 
-
 public class ServerThread extends Thread {
 
+	private Socket socket;
+	private EchoServer server;
 
-	InputStream inp = null;
-	BufferedReader brinp = null;
-	PrintWriter out = null;
+	private InputStream in = null;
+	private BufferedReader bufferRead = null;
+	private PrintWriter out = null;
 
-	protected Socket socket;
-	protected EchoServer server;
 
 	public ServerThread(Socket clientSocket, EchoServer server) {
 		super("ServerThread");
@@ -27,33 +26,30 @@ public class ServerThread extends Thread {
 	}
 
 	public void sendStringToAll(String text){
-		for(ServerThread e : server.connections) {
+		for(ServerThread e : server.threads) {
 			e.sendString(text);
 		}
 	}
 
 	public void run() {
 		try {
-			inp = socket.getInputStream();
+			in = socket.getInputStream();
 			out = new PrintWriter(socket.getOutputStream(), true);
-			brinp = new BufferedReader(new InputStreamReader(inp));
-
+			bufferRead = new BufferedReader(new InputStreamReader(in));
 
 			String line;
-				try {
-					while ((line = brinp.readLine()) != null) {
-						sendStringToAll(line);
+				while ((line = bufferRead.readLine()) != null) {
+
+					sendStringToAll(line);
+
 					if ((line == null) || line.equalsIgnoreCase("QUIT")) {
 						socket.close();
 						return;
 					}
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-					return;
 				}
 
 		} catch (IOException e) {
+			e.printStackTrace();
 			return;
 		}
 	}

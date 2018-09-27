@@ -11,17 +11,12 @@ import java.nio.channels.SocketChannel;
 public class SocketsClient {
 
 	public static void main(String[] args) {
-		new SocketsClient();
-	}
-
-	public SocketsClient() {
 
 		Socket echoSocket = null;
-		ClientThread thread;
 
 		try {
 			echoSocket = new Socket("localhost", 10001);
-			thread = new ClientThread(echoSocket, this);
+			ClientThread thread = new ClientThread(echoSocket);
 			thread.start();
 
 			BufferedReader stdIn = new BufferedReader(
@@ -30,10 +25,8 @@ public class SocketsClient {
 			while (true) {
 
 				String userInput = stdIn.readLine();
-
 				Integer id = echoSocket.getLocalPort();
-
-				thread.sendString(id + " said: " + userInput );
+				thread.sendString(id + " said: " + userInput);
 			}
 
 

@@ -8,13 +8,11 @@ import java.net.Socket;
 
 public class ClientThread extends Thread {
 
-    PrintWriter out;
-    BufferedReader in;
-    BufferedReader stdIn = new BufferedReader(
-            new InputStreamReader(System.in));
-    Socket socket;
+    private PrintWriter out;
+    private BufferedReader in;
+    private Socket socket;
 
-    public ClientThread(Socket socket, SocketsClient client){
+    public ClientThread(Socket socket){
         this.socket = socket;
         try {
             out = new PrintWriter(socket.getOutputStream(), true);
